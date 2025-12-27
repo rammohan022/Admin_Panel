@@ -9,7 +9,6 @@ const options = {
       description: "API documentation for Webex Admin Panel",
     },
 
-    // 🔥 IMPORTANT: Dynamic server for Local + Vercel
     servers: [
       {
         url: process.env.VERCEL_URL
@@ -17,11 +16,10 @@ const options = {
           : "http://localhost:5001",
         description: process.env.VERCEL_URL
           ? "Vercel Server"
-          : "Local Development Server",
+          : "Local Server",
       },
     ],
 
-    // 🔐 JWT Auth config
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -32,17 +30,10 @@ const options = {
       },
     },
 
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    security: [{ bearerAuth: [] }],
   },
 
-  // 👇 Routes where Swagger comments exist
   apis: ["./routes/*.js"],
 };
 
-const swaggerSpec = swaggerJsDoc(options);
-
-module.exports = swaggerSpec;
+module.exports = swaggerJsDoc(options);
