@@ -10,7 +10,14 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: "mysql",
+    dialectModule: require('mysql2'),
     logging: false,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
   }
 );
 
@@ -20,7 +27,10 @@ const connectDB = async () => {
     console.log("MySQL Connected...");
   } catch (error) {
     console.error("DB connection failed:", error);
-    process.exit(1);
+    // Do not exit process in serverless environment
+    if (process.env.NODE_ENV !== 'production') {
+      process.exit(1);
+    }
   }
 };
 
