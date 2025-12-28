@@ -21,9 +21,6 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
 
 // Routes
-app.get("/", (req, res) => {
-  res.json({ message: "API is running..." });
-});
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/contacts", require("./routes/contactRoutes"));
