@@ -1,39 +1,43 @@
-const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerJsDoc = require('swagger-jsdoc');
+const path = require('path');
 
 const options = {
   definition: {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
-      title: "Webex Admin Panel API",
-      version: "1.0.0",
-      description: "API documentation for Webex Admin Panel",
+      title: 'Webex Admin Panel API',
+      version: '1.0.0',
+      description: 'API documentation for Webex Admin Panel',
     },
-
     servers: [
       {
-        url: process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}`
-          : "http://localhost:5001",
-        description: process.env.VERCEL_URL
-          ? "Vercel Server"
-          : "Local Server",
+        url: 'http://localhost:5001',
+        description: 'Local server',
+      },
+      {
+        url: 'https://admin-panel-mu-neon.vercel.app',
+        description: 'Production server',
       },
     ],
-
     components: {
       securitySchemes: {
         bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
         },
       },
     },
-
-    security: [{ bearerAuth: [] }],
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
-
-  apis: ["./routes/*.js"],
+  // Use absolute path for Vercel compatibility
+  apis: [path.join(__dirname, '../routes/*.js')], 
 };
 
-module.exports = swaggerJsDoc(options);
+const swaggerSpec = swaggerJsDoc(options);
+
+module.exports = swaggerSpec;
