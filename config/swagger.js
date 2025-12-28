@@ -34,7 +34,13 @@ const options = {
     security: [{ bearerAuth: [] }],
   },
 
-  apis: [path.join(__dirname, "../routes/*.js")],
+  // Use absolute paths for Vercel
+  apis: [
+    path.resolve(__dirname, "../routes/*.js"),
+    path.resolve(process.cwd(), "routes/*.js"),
+  ],
 };
+
+console.log("Swagger APIs paths:", options.apis);
 
 module.exports = swaggerJsDoc(options);

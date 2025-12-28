@@ -25,6 +25,38 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/contacts", require("./routes/contactRoutes"));
 
+// Debug route to list files (remove in production if sensitive)
+app.get("/debug-files", (req, res) => {
+  const fs = require("fs");
+  const path = require("path");
+  
+  const listDir = (dir) => {
+    try {
+      return fs.readdirSync(dir);
+    } catch (e) {
+      return e.message;
+    }
+  };
+
+  res.json({
+    cwd: process.cwd(),
+    __dirname,
+    rootDir: listDir(process.cwd()),
+    routesDir: listDir(path.join(process.cwd(), "routes")),
+    configDir: listDir(path.join(process.cwd(), "config")),
+    dirnameFiles: listDir(__dirname),
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: "Internal Server Error", 
+    error: process.env.NODE_ENV === "development" ? err.message : undefined 
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 // Export app for Vercel
