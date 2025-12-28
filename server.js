@@ -24,11 +24,21 @@ const path = require("path");
 // Load Swagger JSON directly (fallback to runtime generation if file missing)
 let swaggerSpec;
 try {
-  swaggerSpec = require("./swagger.json");
-  console.log("Loaded static swagger.json");
+  const swaggerPath = path.join(process.cwd(), "swagger.json");
+  if (fs.existsSync(swaggerPath)) {
+    swaggerSpec = JSON.parse(fs.readFileSync(swaggerPath, "utf8"));
+    console.log("Loaded static swagger.json from", swaggerPath);
+  } else {
+    throw new Error("swagger.json not found");
+  }
 } catch (e) {
-  console.log("swagger.json not found, generating at runtime");
-  swaggerSpec = require("./config/swagger");
+  console.log("Static swagger.json failed to load, generating at runtime:", e.message);
+  try {
+    swaggerSpec = require("./config/swagger");
+  } catch (err) {
+    console.error("Runtime generation failed:", err);
+    swaggerSpec = { openapi: "3.0.0", info: { title: "Error", version: "1.0.0" }, paths: {} };
+  }
 }
 
 // Routes
