@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/", createContact);
 
 // Protected routes for authenticated users
-router.get("/", protect getContacts);
+router.get("/", protect, getContacts);
 
 router.route("/:id")
   .put(protect, updateContact)
