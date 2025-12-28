@@ -18,7 +18,18 @@ app.get("/", (req, res) => {
 
 
 const swaggerUi = require("swagger-ui-express");
-const swaggerSpec = require("./config/swagger");
+const fs = require("fs");
+const path = require("path");
+
+// Load Swagger JSON directly (fallback to runtime generation if file missing)
+let swaggerSpec;
+try {
+  swaggerSpec = require("./swagger.json");
+  console.log("Loaded static swagger.json");
+} catch (e) {
+  console.log("swagger.json not found, generating at runtime");
+  swaggerSpec = require("./config/swagger");
+}
 
 // Routes
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
